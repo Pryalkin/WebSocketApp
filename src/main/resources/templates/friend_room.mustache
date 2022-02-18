@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Application</title>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="container" style="background: darksalmon">
+        <div class="row">
+            <div class="col-1">
+                <form action="/users" method="get">
+                    <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                    <button type="submit" class="btn btn-primary">Page</button>
+                </form>
+            </div>
+            <div class="col-9" style="background: #7ddbff; height: 50px">
+                <h3 class="m-b-0">{{email}} writes to {{emailFiend}}</h3>
+            </div>
+            <div class="col-2">
+                <form action="/logout" method="post">
+                    <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                    <button type="submit" class="btn btn-primary">Sing out</button>
+                </form>
+            </div>
+
+            <div class="col-6" style="background: #e47297; height: 500px">
+                <div class="container" style="background: darksalmon">
+                    <input type="hidden" id="senderId" value="{{senderId}}">
+                    <input type="hidden" id="recipientId" value="{{recipientId}}">
+                    <div class="row" id="divMessages">
+                        {{#messages}}
+                        <div class="col-2">
+                            <input type="hidden" id="messageId{{id}}" value="{{id}}">
+                            {{#MessageRoom}}
+                                <span name="send">{{senderId}}</span>
+                            {{/MessageRoom}}
+                        </div>
+                        <div class="col-10" id="block2">
+
+                                <span onclick="edit({{id}})" style="font-weight: bolder">{{date}} Тема: {{topic}}</span>
+                                <p id="message{{id}}" style="display: none; font-style: italic">{{message}}</p>
+                            <form action="users/{{MessageRoom.senderId}}/{{MessageRoom.recipientId}}" id="formEditMessage{{id}}" style="display: none">
+                                <input type="hidden" name="idMes" value="{{id}}">
+                                <input type="text" name="edit" id="editMessage{{id}}" value="{{message}}">
+                                <button type="submit">Send</button>
+                            </form>
+                            <button onclick="editMessage({{id}})" type="submit" class="btn btn-primary" id="edit{{id}}" style="display: none">Edit</button>
+                        </div>
+                        {{/messages}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6" style="background: aquamarine; height: 500px">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3"></div>
+                        <div class="col-6">
+                            <form action="/users/{{senderId}}/{{recipientId}}">
+                                <div class="form-group mt-5">
+                                    <label for="exampleFormControlInput2">Topic</label>
+                                    <input type="text" name="topic" class="form-control" id="exampleFormControlInput2">
+                                </div>
+                                <div class="form-group mt-5">
+                                    <label for="exampleFormControlTextarea1">Example textarea</label>
+                                    <textarea class="form-control" name="message" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-10"></div>
+                                        <div class="col-2 mt-5">
+                                            <button type="submit" class="btn btn-primary" onclick="setMessage()">Send</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>-->
+
+<script
+src = "https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"
+integrity = "sha512-tL4PIUsPy+Rks1go4kQG8M8/ItpRMvKnbBjQm4d2DQnFwgcBYRRN00QdyQnWSCwNMsoY/MfJY8nHp2CzlNdtZA=="
+crossOrigin = "anonymous"
+referrerpolicy = "no-referrer" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.js"
+        integrity="sha512-FG/xmPHYf8OmPEF6seRz63wkv/QAyIezQakUiJFQQsI+VAAZkWz5soFMtGtT3SrNwrAT4xHhHW8OT8DgFulgtA=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+<script src="/app.js"></script>
+<script src="/log.js"></script>
+
+</body>
+</html>
